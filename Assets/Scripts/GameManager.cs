@@ -51,7 +51,11 @@ public class GameManager : MonoBehaviour {
 		
 		GameObject obj = Instantiate (ball) as GameObject;
 		obj.transform.position = new Vector3 (-4,0.5f,0);
-		obj.GetComponent<Rigidbody> ().velocity = new Vector3 (2,0,-2);
+		float angle = Random.Range (-85.0f,-45.0f)*(Mathf.PI/180.0f);
+		float x = Mathf.Cos (angle);
+		float z = Mathf.Sin (angle);
+		obj.GetComponent<SphereScript> ().SetVelocity (new Vector3(x,0,z)*4);
+		//obj.GetComponent<Rigidbody> ().velocity = new Vector3 (2,0,-2);
 
 
 	}

@@ -11,11 +11,16 @@ public class SphereScript : MonoBehaviour {
 	public Vector3 gravity = Vector3.down*9.8f; //重力加速度
 	public float myu = 0.1f;//動摩擦度係数
 	bool is_update = false;
+	float radius;
+
+	float const_y;
 
 	// Use this for initialization
 	void Start () {
 		init_v = v; //初速度
 		f = Vector3.zero;
+		const_y = transform.position.y;
+		radius = transform.localScale.x/2.0f;
 	}
 
 	// Update is called once per frame
@@ -31,6 +36,8 @@ public class SphereScript : MonoBehaviour {
 		a = f/mass; //運動方程式
 		v += a* Time.fixedDeltaTime; //加速度の定義より
 		transform.position += v * Time.fixedDeltaTime; //速度の定義より
+		transform.position += Vector3.up*(const_y - transform.position.y);
+
 		is_update = false;
 		f = Vector3.zero;
 	}
@@ -57,6 +64,7 @@ public class SphereScript : MonoBehaviour {
 		}
 
 
+
 		Vector3 point = collision.contacts [0].point;
 		Vector3 n_vec = point - transform.position;
 
@@ -78,6 +86,11 @@ public class SphereScript : MonoBehaviour {
 			f += -horizontal_v.normalized * N_f.magnitude * myu;
 
 		}
+		Vector3 distance = (collision.contacts [0].point - transform.position);
+		if (distance.magnitude < radius - 0.01f) {
+			transform.position = collision.contacts [0].point + collision.contacts [0].normal.normalized * radius;
+		}
+
 	}
 	void OnCollisionExit(Collision collision){
 		if (!is_update) {
@@ -88,5 +101,9 @@ public class SphereScript : MonoBehaviour {
 
 	float Abs(float x){
 		return (x >= 0) ? x : -x;
+	}
+
+	public void SetVelocity(Vector3 input){
+		v = input;
 	}
 }
